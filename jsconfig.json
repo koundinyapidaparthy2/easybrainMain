@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src", // Set the base directory for module resolution
+    "paths": {
+      "*": ["*"] // Allow importing any module from any directory under "src"
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
