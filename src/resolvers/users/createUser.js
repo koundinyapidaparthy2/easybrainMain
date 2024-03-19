@@ -1,26 +1,31 @@
-import { User } from "../schemas/index.js";
-import { errorList, successList } from "../utils/Errors.js";
+import { User } from "../../schemas/index.js";
+import { errorList, successList } from "../../utils/Errors.js";
 import mongoose from "mongoose";
 import {
   checkValidString,
   checkValidEmail,
   checkValidPassword,
-} from "../utils/index.js";
+} from "../../utils/index.js";
+
+import bcrypt from "bcrypt";
+import loginUser from "./loginUser.js";
 
 const createUser = async (req, res) => {
   const { firstName, lastName, email, age, phone, password, googleId } =
     req.body;
+  console.log({ firstName, lastName, email, age, phone, password, googleId });
   try {
     if (
-      checkValidString(firstName) &&
-      checkValidEmail(email) &&
-      (checkValidPassword(password) || checkValidString(googleId))
+      (checkValidString(firstName) &&
+        checkValidEmail(email) &&
+        checkValidPassword(password)) ||
+      checkValidString(googleId)
     ) {
-      console.log({ firstName, lastName, email, User });
+      const currentPassword = password || googleId;
+      const hashedPassword = await bcrypt.hash(currentPassword, 10);
       const userFound = await User.findOne({
         email,
       });
-      console.log({ userFound, val: mongoose.connection.readyState });
       if (!userFound) {
         const newUser = new User({
           _id: new mongoose.Types.ObjectId(),
@@ -29,14 +34,22 @@ const createUser = async (req, res) => {
           email,
           age,
           phone,
-          password: password || googleId,
+          password: hashedPassword,
         });
+
         await newUser.save();
         try {
-          console.log("User saved successfully");
+          const accessToken = await loginUser({
+            body: {
+              email,
+              password: currentPassword,
+              newUser: true,
+            },
+          });
           res.send({
             error: false,
             message: successList.CREATE_USER,
+            accessToken: accessToken,
           });
         } catch (saveError) {
           console.error("Error saving user:", saveError);

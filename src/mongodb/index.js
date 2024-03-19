@@ -2,12 +2,12 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 dotenv.config();
 
-const PROJECTUSERNAME = process.env.PROJECTUSERNAME;
+const PROJECT_USERNAME = process.env.PROJECT_USERNAME;
 const PASSWORD = process.env.PASSWORD;
-const PROJECTNAME = process.env.PROJECTNAME;
-const USERDETAILSDATABASENAME = process.env.USERDETAILSDATABASENAME;
+const PROJECT_NAME = process.env.PROJECT_NAME;
+const USER_DETAILS_DATABASE_NAME = process.env.USER_DETAILS_DATABASE_NAME;
 // Connection URI
-const uri = `mongodb+srv://${PROJECTUSERNAME}:${PASSWORD}@${PROJECTNAME}.mvetefk.mongodb.net/${USERDETAILSDATABASENAME}?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${PROJECT_USERNAME}:${PASSWORD}@${PROJECT_NAME}.mvetefk.mongodb.net/${USER_DETAILS_DATABASE_NAME}?retryWrites=true&w=majority`;
 
 // Create a new MongoClient
 
